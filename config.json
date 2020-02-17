@@ -1,0 +1,16 @@
+{
+    "global_prefix": "!",
+    "activity": "LOL",
+    "presence": "online",
+    "database": {
+        "host": "",
+        "username": "",
+        "password": "",
+        "database": ""
+    },
+    "administrator_uids": [
+        "311296013178503188",
+        "171717502911381505"
+    ],
+    "private_token": "Mzc2NTI2Mzc0NTc3NTA0MjU2.XknKyw.zd5q3zin1_ai1bu7QJMcPjGDhV4"
+}

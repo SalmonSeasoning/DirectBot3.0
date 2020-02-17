@@ -1,0 +1,31 @@
+{
+  "name": "directbot3.0",
+  "version": "1.0.0",
+  "description": "A Discord Template Bot built with Node.js",
+  "main": "./src/start.js",
+  "scripts": {
+    "test": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SalmonSeasoning/DirectBot3.0.git"
+  },
+  "keywords": [
+    "Discord",
+    "API",
+    "GitHub",
+    "Node.js"
+  ],
+  "author": "Ty Qualters",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/SalmonSeasoning/DirectBot3.0/issues"
+  },
+  "homepage": "https://github.com/SalmonSeasoning/DirectBot3.0#readme",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "erlpack": "github:discordapp/erlpack",
+    "mysql": "^2.18.1",
+    "node-opus": "^0.3.3"
+  }
+}
