@@ -10,19 +10,20 @@ var g_administrators = [];
 
 // Configure the bot
 const g_fsConfig = readIfExistsSync("./config.json");
-const g_Config = g_fsConfig ? JSON.parse(g_fsConfig) : ()=>{
+const g_config = g_fsConfig ? JSON.parse(g_fsConfig) : ()=>{
     console.error("Could not load config.json! Cannot start..");
+    console.info("You can generate a config.json file by running : npm run gen-config");
     process.exit(0);
 };
-if (g_Config["database"])
+if (g_config["database"])
 {
     let dbData = ["localhost", "root", "password", "database"];
-    dbData[0] = ternaryIf(g_Config["database"]["host"], dbData[0]);
-    dbData[1] = ternaryIf(g_Config["database"]["username"], dbData[1]);
-    dbData[2] = ternaryIf(g_Config["database"]["password"], dbData[2]);
-    dbData[3] = ternaryIf(g_Config["database"]["database"], dbData[3]);
+    dbData[0] = ternaryIf(g_config["database"]["host"], dbData[0]);
+    dbData[1] = ternaryIf(g_config["database"]["username"], dbData[1]);
+    dbData[2] = ternaryIf(g_config["database"]["password"], dbData[2]);
+    dbData[3] = ternaryIf(g_config["database"]["database"], dbData[3]);
     g_database = new Database(...dbData); // new Database(dbData[0], dbData[1], dbData[2], dbData[3]);
-    console.log(`Interpreted database connection to be : { ${dbData[0]}, ${dbData[1]}, ${dbData[2]}, ${dbData[3]} }`);
+    console.log(`Interpreted database connection to be : { ${dbData[0]}, ${dbData[1]}, ${dbData[3]} }`);
     console.info("NOTICE: Unhandled promise rejections exceptions are from the MySQL module! Please disregard them for now...");
     g_database.connect().then(()=>{
         // connected to the database
@@ -35,16 +36,16 @@ if (g_Config["database"])
     });
 }
 // set all the admin uids in the config
-if(g_Config["administrator_uids"])
-    for(uid in g_Config["administrator_uids"])
+if(g_config["administrator_uids"])
+    for(uid in g_config["administrator_uids"])
     {
-        console.log(`Found administrator UID : ${g_Config["administrator_uids"][uid]}`);
-        g_administrators[uid] = g_Config["administrator_uids"][uid];
+        console.log(`Found administrator UID : ${g_config["administrator_uids"][uid]}`);
+        g_administrators[uid] = g_config["administrator_uids"][uid];
 
     }
 
 // set the bot prefix
-const g_botPrefix = ternaryIf(g_Config["global_prefix"], "!"); // can also do: g_botPrefix = g_Config["global_prefix"] || "!";
+const g_botPrefix = ternaryIf(g_config["global_prefix"], "!"); // can also do: g_botPrefix = g_config["global_prefix"] || "!";
 
 // Discord.js Client
 const g_client = new Discord.Client();
@@ -64,8 +65,8 @@ const g_clientHandler = new ClientHandler(g_client, g_botPrefix, g_database, ...
 // bot is online
 g_client.on("ready", ()=>{
     // set the bot status (online, idle, dnd, offline)
-    if(g_Config["presence"])
-    switch(g_Config["presence"].toLowerCase())
+    if(g_config["presence"])
+    switch(g_config["presence"].toLowerCase())
     {
         case "online":
             console.log("Set status to online");
@@ -88,10 +89,10 @@ g_client.on("ready", ()=>{
             g_client.user.setStatus("online");
     }
     // set the activity (i.e. User PLAYING !help)
-    if(g_Config["activity"])
+    if(g_config["activity"])
     {
-        console.log(`Set activity to : ${g_Config["activity"]}`);
-        g_client.user.setActivity(g_Config["activity"]);
+        console.log(`Set activity to : ${g_config["activity"]}`);
+        g_client.user.setActivity(g_config["activity"]);
     }
     else
     {
@@ -105,7 +106,7 @@ g_client.on("ready", ()=>{
 g_client.on("message", (message)=>g_clientHandler.handleCommand(message));
 
 // check config for bot token
-if(g_Config["private_token"]) g_client.login(g_Config["private_token"]);
+if(g_config["private_token"]) g_client.login(g_config["private_token"]);
 // check environment variables for bot token
 else if(process.env.TOKEN) g_client.login(process.env.TOKEN);
 // assume no token

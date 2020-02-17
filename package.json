@@ -5,7 +5,8 @@
   "main": "./src/start.js",
   "scripts": {
     "run": "node .",
-    "sql-setup": "node ./src/sql_setup.js"
+    "sql-setup": "node ./src/sql_setup.js",
+    "gen-config": "node ./src/config_gen.js"
   },
   "repository": {
     "type": "git",

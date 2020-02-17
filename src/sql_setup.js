@@ -24,7 +24,7 @@ if (g_Config["database"]) {
     dbData[3] = ternaryIf(g_Config["database"]["database"], dbData[3]);
     g_database = new Database(...dbData);
 
-    console.log(`Interpreted database connection to be : { ${dbData[0]}, ${dbData[1]}, ${dbData[2]}, ${dbData[3]} }`);
+    console.log(`Interpreted database connection to be : { ${dbData[0]}, ${dbData[1]}, ${dbData[3]} }`);
     console.info("NOTICE: Unhandled promise rejections exceptions are from the MySQL module! Please disregard them for now...");
     
     // connect to database
@@ -35,11 +35,22 @@ if (g_Config["database"]) {
 
         // loop through ./src/sql for each .sql extension
         FS.readdirSync("./src/sql").forEach(fileName => {
-            if (fileName.substring(fileName.length, fileName.length - 3) === ".sql") {
+            if (fileName.substring(fileName.length, fileName.length - 4) === ".sql") {
                 console.log(`Found SQL file: ${fileName}`);
-                g_database.query(readIfExistsSync(`./src/sql/${fileName}`)).catch(console.error);
+                g_database.query(readIfExistsSync(`./src/sql/${fileName}`)).then(
+                    ()=>{
+                        console.log(`Successfully executed ${fileName}`);
+                    },
+                    ()=>{
+                        console.error(`Failed to execute ${fileName}`)
+                    }
+                );
             }
         });
+
+        // force-end
+        console.log("DONE!");
+        process.exit(0);
 
     }, (err) => {
         // failed to connect
