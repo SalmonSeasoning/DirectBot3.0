@@ -1,13 +1,13 @@
 const Discord = require('discord.js');
 const { Database } = require("./classes/database");
 const { ClientHandler } = require("./classes/client_handler");
-const { TernaryIf, ReadIfExistsSync } = require("./utils.js");
+const { ternaryIf, readIfExistsSync } = require("./utils.js");
 
 var g_database = null;
 var g_administrators = [];
 
 // Configure the bot
-const g_fsConfig = ReadIfExistsSync("./config.json", "UTF-8");
+const g_fsConfig = readIfExistsSync("./config.json", "UTF-8");
 const g_Config = g_fsConfig ? JSON.parse(g_fsConfig) : ()=>{
     console.log("Could not load config.json! Cannot start..");
     process.exit(0);
@@ -15,10 +15,10 @@ const g_Config = g_fsConfig ? JSON.parse(g_fsConfig) : ()=>{
 if (g_Config["database"])
 {
     let dbData = ["localhost", "root", "password", "database"];
-    dbData[0] = TernaryIf(g_Config["database"]["host"], dbData[0]);
-    dbData[1] = TernaryIf(g_Config["database"]["username"], dbData[1]);
-    dbData[2] = TernaryIf(["database"]["password"], dbData[2]);
-    dbData[3] = TernaryIf(g_Config["database"]["database"], dbData[3]);
+    dbData[0] = ternaryIf(g_Config["database"]["host"], dbData[0]);
+    dbData[1] = ternaryIf(g_Config["database"]["username"], dbData[1]);
+    dbData[2] = ternaryIf(["database"]["password"], dbData[2]);
+    dbData[3] = ternaryIf(g_Config["database"]["database"], dbData[3]);
     g_database = new Database(...dbData);
     console.log(`Interpreted database connection to be : { ${dbData[0]}, ${dbData[1]}, ${dbData[2]}, ${dbData[3]} }`);
     console.log("NOTICE: Unhandled promise rejections exceptions are from the MySQL module! Please disregard them for now...");
@@ -31,7 +31,7 @@ if(g_Config["administrator_uids"])
 
     }
 
-const g_botPrefix = TernaryIf(g_Config["global_prefix"], "!");
+const g_botPrefix = ternaryIf(g_Config["global_prefix"], "!");
 
 const g_client = new Discord.Client();
 
