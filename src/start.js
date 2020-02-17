@@ -1,15 +1,17 @@
+// Include necessary modules
 const Discord = require('discord.js');
 const { Database } = require("./classes/database");
 const { ClientHandler } = require("./classes/client_handler");
 const { ternaryIf, readIfExistsSync } = require("./utils.js");
 
+// g_ = Global variable prefix (see Systems Hungarian Notation)
 var g_database = null;
 var g_administrators = [];
 
 // Configure the bot
-const g_fsConfig = readIfExistsSync("./config.json", "UTF-8");
+const g_fsConfig = readIfExistsSync("./config.json");
 const g_Config = g_fsConfig ? JSON.parse(g_fsConfig) : ()=>{
-    console.log("Could not load config.json! Cannot start..");
+    console.error("Could not load config.json! Cannot start..");
     process.exit(0);
 };
 if (g_Config["database"])
@@ -17,12 +19,22 @@ if (g_Config["database"])
     let dbData = ["localhost", "root", "password", "database"];
     dbData[0] = ternaryIf(g_Config["database"]["host"], dbData[0]);
     dbData[1] = ternaryIf(g_Config["database"]["username"], dbData[1]);
-    dbData[2] = ternaryIf(["database"]["password"], dbData[2]);
+    dbData[2] = ternaryIf(g_Config["database"]["password"], dbData[2]);
     dbData[3] = ternaryIf(g_Config["database"]["database"], dbData[3]);
-    g_database = new Database(...dbData);
+    g_database = new Database(...dbData); // new Database(dbData[0], dbData[1], dbData[2], dbData[3]);
     console.log(`Interpreted database connection to be : { ${dbData[0]}, ${dbData[1]}, ${dbData[2]}, ${dbData[3]} }`);
-    console.log("NOTICE: Unhandled promise rejections exceptions are from the MySQL module! Please disregard them for now...");
+    console.info("NOTICE: Unhandled promise rejections exceptions are from the MySQL module! Please disregard them for now...");
+    g_database.connect().then(()=>{
+        // connected to the database
+        console.log("Successfully connected to the database!");
+        g_database.query(`USE ${g_database.dbname}`); // dont rely on this
+    }, (err)=>{
+        // not connected to the database
+        console.warn("Could not to connect to the database!");
+        console.warn(err);
+    });
 }
+// set all the admin uids in the config
 if(g_Config["administrator_uids"])
     for(uid in g_Config["administrator_uids"])
     {
@@ -31,21 +43,27 @@ if(g_Config["administrator_uids"])
 
     }
 
-const g_botPrefix = ternaryIf(g_Config["global_prefix"], "!");
+// set the bot prefix
+const g_botPrefix = ternaryIf(g_Config["global_prefix"], "!"); // can also do: g_botPrefix = g_Config["global_prefix"] || "!";
 
+// Discord.js Client
 const g_client = new Discord.Client();
 
+// Include all the commands from the "commands" directory
 require("fs").readdirSync("./src/commands").forEach(fileName => {
-    if (fileName.substring(fileName.length, fileName.length - 3) === ".js")
+    if (fileName.substring(fileName.length, fileName.length - 3) === ".js") // only include if the file has a .js extension
     {
         console.log(`Found command file: ${fileName}`);
         require(`./commands/${fileName}`);
     }
 });
 
+// Client handler -- handles information from Discord.js client
 const g_clientHandler = new ClientHandler(g_client, g_botPrefix, g_database, ...g_administrators);
 
+// bot is online
 g_client.on("ready", ()=>{
+    // set the bot status (online, idle, dnd, offline)
     if(g_Config["presence"])
     switch(g_Config["presence"].toLowerCase())
     {
@@ -69,6 +87,7 @@ g_client.on("ready", ()=>{
             console.log("Set default status");
             g_client.user.setStatus("online");
     }
+    // set the activity (i.e. User PLAYING !help)
     if(g_Config["activity"])
     {
         console.log(`Set activity to : ${g_Config["activity"]}`);
@@ -82,12 +101,16 @@ g_client.on("ready", ()=>{
     console.log("Ready!");
 });
 
+// Bind the command handler to the message event
 g_client.on("message", (message)=>g_clientHandler.handleCommand(message));
 
+// check config for bot token
 if(g_Config["private_token"]) g_client.login(g_Config["private_token"]);
+// check environment variables for bot token
 else if(process.env.TOKEN) g_client.login(process.env.TOKEN);
+// assume no token
 else 
 {
-    console.log("No token found! Cannot start the bot!");
+    console.error("No token found! Cannot start the bot!");
     process.exit(0);
 }

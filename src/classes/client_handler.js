@@ -1,4 +1,7 @@
 const {Command} = require("./command");
+
+
+// controls Discord.js client events
 class ClientHandler {
     constructor(client, defaultPrefix, database, administrators)
     {
@@ -8,6 +11,7 @@ class ClientHandler {
         this.administrators = administrators;
     }
 
+    // handle messages
     handleCommand(message)
     {
 

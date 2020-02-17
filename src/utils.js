@@ -10,7 +10,7 @@ function ternaryIf(cond, def)
 function readIfExistsSync(fileName)
 {
     if(require("fs").existsSync(fileName))
-        return require("fs").readFileSync(fileName);
+        return require("fs").readFileSync(fileName, "UTF-8");
 }
 module.exports = {
     ternaryIf: ternaryIf,

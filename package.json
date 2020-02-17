@@ -4,7 +4,8 @@
   "description": "A Discord Template Bot built with Node.js",
   "main": "./src/start.js",
   "scripts": {
-    "test": "node ."
+    "run": "node .",
+    "sql-setup": "node ./src/sql_setup.js"
   },
   "repository": {
     "type": "git",
