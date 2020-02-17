@@ -44,3 +44,6 @@ Licensed MIT (See LICENSE)
 `administrator_uids` (default: `[]`) an array of Discord UIDs that will be marked as administrators
 
 `private_token` the bot's login token
+
+## YouTube Video
+[![YOUTUBE-LINK-TO-VIDEO](http://i3.ytimg.com/vi/AIdpm4dfZ00/maxresdefault.jpg)](https://www.youtube.com/watch?v=AIdpm4dfZ00)
