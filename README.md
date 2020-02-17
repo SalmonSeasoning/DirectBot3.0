@@ -39,6 +39,8 @@ Licensed MIT (See LICENSE)
 
 - `database` the name of the database or schema being used
 
+> Note: If you do not have an available database connection, simply discard the `database { ... }` code block from config.json and it will be completely ignored with the downside of all database-requiring commands being disabled as well... obviously.
+
 `administrator_uids` (default: `[]`) an array of Discord UIDs that will be marked as administrators
 
 `private_token` the bot's login token
