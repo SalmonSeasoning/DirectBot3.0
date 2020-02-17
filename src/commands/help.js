@@ -14,6 +14,5 @@ new Command("help", {
         }
         message.channel.send(`Here is a list of commands: \`\`\`\n${szCommands}-- ADMIN ONLY --\n${ternaryIf(szAdminCommands, "(None)")}\`\`\``);
     }, 
-    description: "Lists all the available commands",
-    requireDB: true
+    description: "Lists all the available commands"
 });

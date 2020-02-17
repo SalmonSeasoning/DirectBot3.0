@@ -15,7 +15,7 @@ const g_Config = {
     ],
         "private_token": "<BOT TOKEN GOES HERE>"
 }
-fs.writeFile("./config.json", JSON.stringify(g_Config), (err) => {
+FS.writeFile("./config.json", JSON.stringify(g_Config), (err) => {
     if (err) throw err;
     console.log('Config.json generated successfully!');
 }); 
