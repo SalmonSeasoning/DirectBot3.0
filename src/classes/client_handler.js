@@ -43,7 +43,7 @@ class ClientHandler {
                     else
                         return message.channel.send(`${message.author} \`${searchingFor}\` is currently unavailable because there is no database configuration`);
                 }
-                return command.exec(message, this.database);
+                return command.exec(message, this.database, this.client);
             }
         // could not find the requested command
         message.channel.send(`${message.author} Unrecognized command \`${searchingFor}\``);
