@@ -13,9 +13,9 @@ class Command {
         this.requireDB = options["requireDB"] ? true : false;
         Command.m_commands.push(this);
     }
-    exec(message, database) // call the function
+    exec(message, database, client) // call the function
     {
-        this.func(message, database);
+        this.func(message, database, client);
     }
 }
 
